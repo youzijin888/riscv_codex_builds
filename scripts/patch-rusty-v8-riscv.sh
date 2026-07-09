@@ -56,6 +56,22 @@ if [ -f "$bindgen_runner" ] && ! grep -q 'args.libclang_path + os.pathsep' "$bin
   perl -0pi -e 's/    if args\.libclang_path:\n      env\["LIBCLANG_PATH"\] = args\.libclang_path\n/    if args.libclang_path:\n      env["LIBCLANG_PATH"] = args.libclang_path\n      if sys.platform != '\''darwin'\'':\n        env["LD_LIBRARY_PATH"] = args.libclang_path + os.pathsep + env.get(\n            "LD_LIBRARY_PATH", "")\n/s' "$bindgen_runner"
 fi
 
+gcc_link_wrapper="$rusty_v8_dir/build/toolchain/gcc_link_wrapper.py"
+if [ -f "$gcc_link_wrapper" ] && ! grep -q 'AddRustSysrootLibsLast' "$gcc_link_wrapper"; then
+  perl -0pi -e 's/\n\ndef main\(\):/\n\ndef AddRustSysrootLibsLast(command):\n  rust_sysroot_rlibs = [\n      arg for arg in command\n      if arg.endswith('\''.rlib'\'') and '\''prebuilt_rustc_sysroot\/'\'' in arg\n  ]\n  if not rust_sysroot_rlibs:\n    return command\n\n  return command + ['\''-Wl,--start-group'\''\n                   ] + rust_sysroot_rlibs + [\n                       '\''-Wl,--end-group'\'', '\''-latomic'\'', '\''-ldl'\'', '\''-lpthread'\'',\n                       '\''-lrt'\''\n                   ]\n\n\ndef main():/s' "$gcc_link_wrapper"
+  perl -0pi -e 's/  result = wrapper_utils\.RunLinkWithOptionalMapFile\(args\.command, env=fast_env,\n                                                    map_file=args\.map_file\)/  command = AddRustSysrootLibsLast(args.command)\n  result = wrapper_utils.RunLinkWithOptionalMapFile(command, env=fast_env,\n                                                    map_file=args.map_file\)/s' "$gcc_link_wrapper"
+fi
+
+macro_assembler_riscv="$rusty_v8_dir/v8/src/codegen/riscv/macro-assembler-riscv.cc"
+if [ -f "$macro_assembler_riscv" ] && ! grep -q 'template void MacroAssembler::FloatMinMaxHelper<double>' "$macro_assembler_riscv"; then
+  perl -0pi -e 's/(  bind\(&done\);\n\}\n\n)void MacroAssembler::Float32Max/$1template void MacroAssembler::FloatMinMaxHelper<float>(\n    FPURegister dst, FPURegister src1, FPURegister src2, MaxMinKind kind);\ntemplate void MacroAssembler::FloatMinMaxHelper<double>(\n    FPURegister dst, FPURegister src1, FPURegister src2, MaxMinKind kind);\n\nvoid MacroAssembler::Float32Max/s' "$macro_assembler_riscv"
+fi
+
+constant_expression_interface="$rusty_v8_dir/v8/src/wasm/constant-expression-interface.cc"
+if [ -f "$constant_expression_interface" ] && ! grep -q 'src/objects/managed-inl.h' "$constant_expression_interface"; then
+  perl -0pi -e 's/(#include "src\/handles\/handles-inl\.h"\n)/$1#include "src\/objects\/managed-inl.h"\n/s' "$constant_expression_interface"
+fi
+
 macros_h="$rusty_v8_dir/v8/src/base/macros.h"
 if [ -f "$macros_h" ] && ! grep -q '#define __has_warning(x) 0' "$macros_h"; then
   perl -0pi -e 's/(#include "src\/base\/logging\.h"\n)/$1\n#ifndef __has_warning\n#define __has_warning(x) 0\n#endif\n/s' "$macros_h"

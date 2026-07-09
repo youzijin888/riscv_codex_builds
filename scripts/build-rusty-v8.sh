@@ -96,7 +96,14 @@ fi
 lib_path="$(find "$CARGO_TARGET_DIR/$RUST_TARGET/release/build" -path '*/out/gn_out/obj/librusty_v8.a' -print | head -1)"
 binding_path="$(find "$CARGO_TARGET_DIR/$RUST_TARGET/release/build" -path '*/out/gn_out/src_binding.rs' -print | head -1)"
 
-if [ -z "$lib_path" ] || [ -z "$binding_path" ]; then
+if [ -z "$lib_path" ]; then
+  lib_path="$CARGO_TARGET_DIR/$RUST_TARGET/release/gn_out/obj/librusty_v8.a"
+fi
+if [ -z "$binding_path" ]; then
+  binding_path="$CARGO_TARGET_DIR/$RUST_TARGET/release/gn_out/src_binding.rs"
+fi
+
+if [ ! -f "$lib_path" ] || [ ! -f "$binding_path" ]; then
   echo "failed to locate rusty_v8 build outputs under $CARGO_TARGET_DIR" >&2
   exit 1
 fi
