@@ -1,2 +1,3 @@
 work/
+*.swap
 v8-artifacts/**/librusty_v8_release_*.a.gz

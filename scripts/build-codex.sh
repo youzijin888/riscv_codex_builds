@@ -6,11 +6,21 @@ if [ $# -lt 3 ]; then
   exit 2
 fi
 
-CODEX_DIR="$1"
-RUSTY_V8_ARCHIVE_PATH="$2"
-RUSTY_V8_BINDING_PATH="$3"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+
+abs_file_path() {
+  local path="$1"
+  local dir base
+  dir="$(dirname "$path")"
+  base="$(basename "$path")"
+  dir="$(cd "$dir" && pwd -P)"
+  printf '%s/%s\n' "$dir" "$base"
+}
+
+CODEX_DIR="$(cd "$1" && pwd -P)"
+RUSTY_V8_ARCHIVE_PATH="$(abs_file_path "$2")"
+RUSTY_V8_BINDING_PATH="$(abs_file_path "$3")"
 
 RUST_TARGET="${RUST_TARGET:-riscv64gc-unknown-linux-gnu}"
 RUST_TOOLCHAIN="${RUST_TOOLCHAIN:-1.95.0}"
@@ -32,7 +42,11 @@ export CARGO_PROFILE_RELEASE_LTO="${CARGO_PROFILE_RELEASE_LTO:-false}"
 export CARGO_PROFILE_RELEASE_CODEGEN_UNITS="${CARGO_PROFILE_RELEASE_CODEGEN_UNITS:-16}"
 
 host_triple="$(rustc "+${RUST_TOOLCHAIN}" -Vv | sed -n 's/^host: //p')"
-if [ "$host_triple" != "$RUST_TARGET" ]; then
+if [ "$host_triple" = "$RUST_TARGET" ]; then
+  export CARGO_TARGET_RISCV64GC_UNKNOWN_LINUX_GNU_LINKER="${CARGO_TARGET_RISCV64GC_UNKNOWN_LINUX_GNU_LINKER:-/usr/bin/g++}"
+  export CC_riscv64gc_unknown_linux_gnu="${CC_riscv64gc_unknown_linux_gnu:-/usr/bin/gcc}"
+  export CXX_riscv64gc_unknown_linux_gnu="${CXX_riscv64gc_unknown_linux_gnu:-/usr/bin/g++}"
+else
   export CARGO_TARGET_RISCV64GC_UNKNOWN_LINUX_GNU_LINKER="${CARGO_TARGET_RISCV64GC_UNKNOWN_LINUX_GNU_LINKER:-/usr/bin/riscv64-linux-gnu-g++}"
   export CC_riscv64gc_unknown_linux_gnu="${CC_riscv64gc_unknown_linux_gnu:-/usr/bin/riscv64-linux-gnu-gcc}"
   export CXX_riscv64gc_unknown_linux_gnu="${CXX_riscv64gc_unknown_linux_gnu:-/usr/bin/riscv64-linux-gnu-g++}"
@@ -40,7 +54,7 @@ fi
 
 (
   cd "$CODEX_DIR/codex-rs"
-  cargo "+${RUST_TOOLCHAIN}" build --release -p codex-cli --bin codex --target "$RUST_TARGET"
+  cargo "+${RUST_TOOLCHAIN}" rustc --release -p codex-cli --bin codex --target "$RUST_TARGET" -- -C link-arg=-lstdc++
 )
 
 version="$(sed -n 's/^version = "\([^"]*\)"/\1/p' "$CODEX_DIR/codex-rs/Cargo.toml" | head -1)"
