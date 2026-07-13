@@ -11,6 +11,24 @@ The workflow is:
 4. Patch Codex for RISC-V OpenSSL and seccomp support.
 5. Build `codex-cli`.
 
+## Install the prebuilt Codex CLI
+
+The current verified release is Codex CLI `0.144.1` for
+`riscv64gc-unknown-linux-gnu` (glibc, LP64D ABI).
+
+From a clone of this repository:
+
+```bash
+scripts/install-codex-release.sh 0.144.1
+```
+
+The installer downloads the GitHub Release archive, verifies `SHA256SUMS`,
+and atomically replaces `~/.local/bin/codex`. Running Codex processes continue
+using their existing executable; new processes use the updated version.
+
+See [Install and update](docs/install-update.md) for runtime requirements,
+direct-download commands, custom install paths, updates, and rollback.
+
 ## Host requirements
 
 Install the usual Rust and cross-build tools first:
@@ -49,8 +67,8 @@ scripts/build-latest.sh
 
 ## Build only rusty_v8
 
-For the current latest stable Codex at the time this scaffold was verified,
-`rust-v0.143.0` uses `v8 = "=149.2.0"`.
+For the current stable Codex verified by this repository,
+`rust-v0.144.1` uses `v8 = "=149.2.0"`.
 
 ```bash
 scripts/build-rusty-v8.sh 149.2.0
@@ -103,3 +121,20 @@ On 16 GiB RISC-V machines, start with 4 jobs. On 8 GiB machines, start with 3
 jobs only if swap stays near zero. If available memory drops below about 2 GiB
 or swap starts growing quickly, restart with fewer jobs; existing object files
 are reused.
+
+## Package a Codex release
+
+After a successful build, create a debug-stripped and compressed GitHub Release
+asset with:
+
+```bash
+scripts/package-codex-release.sh \
+  work/artifacts/codex-riscv64gc-unknown-linux-gnu/codex-0.144.1-riscv64gc-unknown-linux-gnu \
+  0.144.1
+```
+
+The release files are written under:
+
+```text
+work/releases/codex-v0.144.1-riscv64gc-unknown-linux-gnu/
+```
