@@ -14,7 +14,7 @@ work/artifacts/codex-riscv64gc-unknown-linux-gnu/codex-0.144.1-riscv64gc-unknown
 The installed command is:
 
 ```text
-/home/xmut1613/.local/bin/codex
+~/.local/bin/codex
 ```
 
 Verification:
@@ -32,9 +32,9 @@ executable:
 ```bash
 install -m 0755 \
   work/artifacts/codex-riscv64gc-unknown-linux-gnu/codex-0.144.1-riscv64gc-unknown-linux-gnu \
-  /home/xmut1613/.local/bin/.codex.new
-mv -f /home/xmut1613/.local/bin/.codex.new /home/xmut1613/.local/bin/codex
-/home/xmut1613/.local/bin/codex --version
+  ~/.local/bin/.codex.new
+mv -f ~/.local/bin/.codex.new ~/.local/bin/codex
+~/.local/bin/codex --version
 ```
 
 The `mv -f` step replaces the directory entry. Existing running Codex
@@ -53,9 +53,9 @@ swapon: ... insecure file owner 1000, 0(root) suggested
 Fix the owner and permissions before enabling it:
 
 ```bash
-sudo chown root:root /home/xmut1613/wuqiang/riscv_codex_builds/codex-build.swap
-sudo chmod 600 /home/xmut1613/wuqiang/riscv_codex_builds/codex-build.swap
-sudo swapon /home/xmut1613/wuqiang/riscv_codex_builds/codex-build.swap
+sudo chown root:root /path/to/riscv-codex-builds/codex-build.swap
+sudo chmod 600 /path/to/riscv-codex-builds/codex-build.swap
+sudo swapon /path/to/riscv-codex-builds/codex-build.swap
 ```
 
 Do not commit the swap file.

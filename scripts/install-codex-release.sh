@@ -5,7 +5,7 @@ DEFAULT_CODEX_VERSION="0.144.1"
 CODEX_VERSION="${1:-${CODEX_VERSION:-$DEFAULT_CODEX_VERSION}}"
 CODEX_VERSION="${CODEX_VERSION#v}"
 RUST_TARGET="${2:-${RUST_TARGET:-riscv64gc-unknown-linux-gnu}}"
-REPO="${REPO:-youzijin888/riscv_codex_builds}"
+REPO="${REPO:-youzijin888/riscv-codex-builds}"
 INSTALL_PATH="${INSTALL_PATH:-$HOME/.local/bin/codex}"
 
 TAG="codex-v${CODEX_VERSION}-${RUST_TARGET}"

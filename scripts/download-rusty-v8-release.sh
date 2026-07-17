@@ -9,7 +9,7 @@ fi
 
 V8_VERSION="$1"
 RUST_TARGET="${2:-${RUST_TARGET:-riscv64gc-unknown-linux-gnu}}"
-REPO="${REPO:-youzijin888/riscv_codex_builds}"
+REPO="${REPO:-youzijin888/riscv-codex-builds}"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"

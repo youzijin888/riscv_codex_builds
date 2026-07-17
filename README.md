@@ -1,7 +1,14 @@
 # Codex RISC-V Maintainer
 
+[![License](https://img.shields.io/github/license/youzijin888/riscv-codex-builds)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/youzijin888/riscv-codex-builds?display_name=tag)](https://github.com/youzijin888/riscv-codex-builds/releases)
+
 Scripts for building the latest stable Rust Codex CLI for
 `riscv64gc-unknown-linux-gnu`.
+
+This repository publishes reproducible scripts, build notes, and
+checksum-verified RISC-V release artifacts. It is intended for maintainers and
+advanced users who want to run Codex CLI on 64-bit RISC-V Linux systems.
 
 The workflow is:
 
@@ -50,7 +57,7 @@ rustup target add riscv64gc-unknown-linux-gnu --toolchain 1.95.0
 ## Build latest stable Codex
 
 ```bash
-cd codex-riscv-maintainer
+cd riscv-codex-builds
 scripts/build-latest.sh
 ```
 
@@ -138,3 +145,33 @@ The release files are written under:
 ```text
 work/releases/codex-v0.144.1-riscv64gc-unknown-linux-gnu/
 ```
+
+## Repository layout
+
+```text
+scripts/        Build, patch, package, download, and install helpers
+docs/           Build notes, install/update docs, and release notes
+v8-artifacts/   Metadata and small files for reusable rusty_v8 artifacts
+```
+
+Large `rusty_v8` static libraries are published through GitHub Release assets
+instead of normal Git blobs.
+
+## Contributing
+
+RISC-V build reports, packaging fixes, and documentation improvements are
+welcome. Start with [CONTRIBUTING.md](CONTRIBUTING.md), and include host
+hardware, distro, memory, swap, Rust toolchain, and the exact Codex/rusty_v8
+versions when reporting build behavior.
+
+## Security
+
+Release artifacts are published with `SHA256SUMS`; verify checksums before
+installing. For private vulnerability reports, see [SECURITY.md](SECURITY.md).
+
+## License
+
+This repository is licensed under the [Apache License 2.0](LICENSE). Codex,
+Rust, V8, rusty_v8, and other third-party components remain subject to their
+own upstream licenses and notices. Packaged Codex release archives include the
+upstream `LICENSE` and `NOTICE` files when available.

@@ -56,7 +56,7 @@ Download the installer from GitHub and run it:
 
 ```bash
 curl -fsSLO \
-  https://raw.githubusercontent.com/youzijin888/riscv_codex_builds/main/scripts/install-codex-release.sh
+  https://raw.githubusercontent.com/youzijin888/riscv-codex-builds/main/scripts/install-codex-release.sh
 chmod +x install-codex-release.sh
 ./install-codex-release.sh 0.144.1
 ```

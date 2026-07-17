@@ -1,0 +1,45 @@
+name: Build or install issue
+description: Report a RISC-V Codex build, package, or install problem.
+title: "[Bug] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include board or VM, distro, kernel, RAM, swap, and storage type.
+      placeholder: |
+        Board/VM:
+        Distro:
+        Kernel:
+        RAM/swap:
+        Storage:
+    validations:
+      required: true
+  - type: textarea
+    id: versions
+    attributes:
+      label: Versions
+      description: Include Codex tag, rusty_v8 version, Rust toolchain, and target triple.
+      placeholder: |
+        Codex:
+        rusty_v8:
+        Rust:
+        Target:
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Paste the exact command sequence. Remove tokens and private paths if needed.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: Paste the relevant failing log excerpt.
+      render: shell
+    validations:
+      required: false
